@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using HashCopier.Model;
@@ -23,7 +21,6 @@ namespace HashCopier.Controller
             {
                 foreach (var filePath in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
                 {
-
                     var bufferedStream = new BufferedStream(new FileStream(filePath, FileMode.Open), bufferedSize);
 
                     // Add to file list
@@ -35,33 +32,28 @@ namespace HashCopier.Controller
             return fileList;
         }
 
-        public async Task<List<FileListModel>> GetFileListModel(Dictionary<string, string> srcHashList, Dictionary<string, string> destHashList)
+        public async Task<List<FileListModel>> GetFileListModel(Dictionary<string, string> srcHashList,
+            Dictionary<string, string> destHashList)
         {
             var modelList = new List<FileListModel>();
 
             await Task.Run(() =>
             {
                 foreach (var dictionaryItem in srcHashList)
-                {
                     if (!destHashList.ContainsKey(dictionaryItem.Key))
-                    {
-                        modelList.Add(new FileListModel()
+                        modelList.Add(new FileListModel
                         {
                             Name = dictionaryItem.Value,
                             Status = "Can copy",
                             StatusColor = new SolidColorBrush(Colors.Green)
                         });
-                    }
                     else
-                    {
-                        modelList.Add(new FileListModel()
+                        modelList.Add(new FileListModel
                         {
                             Name = dictionaryItem.Value,
                             Status = "Duplicated",
                             StatusColor = new SolidColorBrush(Colors.DarkOrange)
                         });
-                    }
-                }
             });
 
             return modelList;
