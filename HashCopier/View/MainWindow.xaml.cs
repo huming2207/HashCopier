@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Net;
+using System.Windows;
 
 namespace HashCopier
 {
@@ -11,5 +13,6 @@ namespace HashCopier
         {
             InitializeComponent();
         }
+
     }
 }
