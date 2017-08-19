@@ -9,18 +9,18 @@
     <Grid>
         <Grid Margin="10,10,10,172.5">
 
-            <TextBox HorizontalAlignment="Left" Height="24" Margin="118,18,0,0" TextWrapping="Wrap" Text="Not selected"
+            <TextBox x:Name="SrcPathTextbox" HorizontalAlignment="Left" Height="24" Margin="118,18,0,0" TextWrapping="Wrap" Text="Not selected"
                      VerticalAlignment="Top" Width="372" />
-            <TextBox HorizontalAlignment="Left" Height="24" Margin="118,56,0,0" TextWrapping="Wrap" Text="Not selected"
+            <TextBox x:Name="DestPathTextbox" HorizontalAlignment="Left" Height="24" Margin="118,56,0,0" TextWrapping="Wrap" Text="Not selected"
                      VerticalAlignment="Top" Width="372" />
-            <Button Content="Copy" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="228"
-                    Height="42" />
-            <Button Content="Move" HorizontalAlignment="Left" Margin="243,90,0,0" VerticalAlignment="Top" Width="247"
-                    Height="42" />
-            <Button Content="Source Path" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top"
-                    Width="103" Height="25" />
-            <Button Content="Dest Path" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top"
-                    Width="103" Height="25" />
+            <Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="228"
+                    Height="42" Click="CopyButton_OnClick"/>
+            <Button x:Name="MoveButton" Content="Move" HorizontalAlignment="Left" Margin="243,90,0,0" VerticalAlignment="Top" Width="247"
+                    Height="42" Click="MoveButton_OnClick" />
+            <Button x:Name="SrcPathButton"  Content="Source Path" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top"
+                    Width="103" Height="25" Click="SrcPathButton_OnClick" />
+            <Button x:Name="DestPathButton" Content="Dest Path" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top"
+                    Width="103" Height="25" Click="DestPathButton_OnClick" />
 
         </Grid>
         <ListView Margin="10,155,10,55.5" Name="FileList">
@@ -38,8 +38,8 @@
             </ListView.View>
         </ListView>
 
-        <ProgressBar Margin="10,326,10,29.5" x:Name="SingleFileProgress"/>
-        <ProgressBar Margin="10,347,10,8.5" x:Name="WholeProgress"/>
+        <ProgressBar Margin="10,326,10,29.5" x:Name="SingleFileProgress" Maximum="100" Minimum="0"/>
+        <ProgressBar Margin="10,347,10,8.5" x:Name="WholeProgress"  Maximum="100" Minimum="0"/>
 
     </Grid>
 </Window>

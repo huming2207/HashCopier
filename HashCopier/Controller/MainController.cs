@@ -9,10 +9,9 @@ using HashCopier.Model;
 
 namespace HashCopier.Controller
 {
-    public class RecursiveLister
+    public class MainController
     {
-        public async Task<Dictionary<string, string>> GetFileList(string path, Progress<double> progress,
-            int bufferedSize = 1048576)
+        public async Task<Dictionary<string, string>> GetFileList(string path, int bufferedSize = 1048576)
         {
             // Declare file list
             var fileList = new Dictionary<string, string>();
@@ -33,8 +32,8 @@ namespace HashCopier.Controller
             return fileList;
         }
 
-        public async Task<List<FileListModel>> GetFileListModel(Dictionary<string, string> srcHashList,
-            Dictionary<string, string> destHashList, string destDir, IProgress<double> progress)
+        public async Task GetFileListModel(Dictionary<string, string> srcHashList, Dictionary<string, string> destHashList,
+            string destDir, IProgress<double> progress)
         {
             var modelList = new List<FileListModel>();
             var fileListIndex = 0d;
@@ -54,6 +53,9 @@ namespace HashCopier.Controller
 
                     Then the relative root directory is:
                         C:\Users\Jackson
+
+
+                Ref: https://stackoverflow.com/questions/8578110/how-to-extract-common-file-path-from-list-of-file-paths-in-c-sharp
              
              */
             var filePathList = srcHashList.Values.ToList();
@@ -63,8 +65,11 @@ namespace HashCopier.Controller
                 where filePathList.All(f => f.StartsWith(possibleMatch))
                 select possibleMatch;
             var rootDir = Path.GetDirectoryName(matchingChars.First());
- 
 
+            // Invoke the GUI
+            MainWindow.MainWindowToInvoke.FileListLoader = modelList;
+ 
+            // Iterate the file from the list
             foreach (var dictionaryItem in srcHashList)
             {
                 if (!destHashList.ContainsKey(dictionaryItem.Key))
@@ -100,8 +105,6 @@ namespace HashCopier.Controller
 
                 fileListIndex++;
             }
-
-            return modelList;
         }
     }
 }
