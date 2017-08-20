@@ -7,7 +7,6 @@ using HashCopier.Controller;
 using HashCopier.Model;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Microsoft.WindowsAPICodePack.Dialogs.Controls;
 
 namespace HashCopier
 {
@@ -20,7 +19,12 @@ namespace HashCopier
 
         internal List<FileListModel> FileListLoader
         {
-            set { Dispatcher.Invoke(() => { FileList.ItemsSource = value; }, DispatcherPriority.DataBind); }
+            set { Dispatcher.InvokeAsync(() => { FileList.ItemsSource = value; }, DispatcherPriority.DataBind); }
+        }
+
+        internal void ForceRefresh()
+        {
+            this.FileList.Items.Refresh();
         }
 
         public MainWindow()
@@ -31,16 +35,52 @@ namespace HashCopier
 
         private async void CopyButton_OnClick(object sender, RoutedEventArgs e)
         {
+            CopyButton.IsEnabled = false;
+            MoveButton.IsEnabled = false;
+
             var mainController = new MainController();
+
+            // Hash the source file list
+            CopyButton.Content = "Hashing source files...";
+            var srcFileList = await mainController.GetFileList(SrcPathTextbox.Text);
+
+            // Hash the dest file list
+            CopyButton.Content = "Hashing destination files...";
+            var destFileList = await mainController.GetFileList(DestPathTextbox.Text);
+
+            CopyButton.Content = "Copying...";
             await mainController.GetFileListModel(
-                await mainController.GetFileList(SrcPathTextbox.Text),
-                await mainController.GetFileList(DestPathTextbox.Text), DestPathTextbox.Text,
+                srcFileList, destFileList, DestPathTextbox.Text,
                 new Progress<double>(value => SingleFileProgress.Value = value));
+
+            CopyButton.Content = "Copy";
+            CopyButton.IsEnabled = true;
+            MoveButton.IsEnabled = true;
         }
 
-        private void MoveButton_OnClick(object sender, RoutedEventArgs e)
+        private async void MoveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            MoveButton.IsEnabled = false;
+            CopyButton.IsEnabled = false;
+
+            var mainController = new MainController();
+
+            // Hash the source file list
+            MoveButton.Content = "Hashing source files...";
+            var srcFileList = await mainController.GetFileList(SrcPathTextbox.Text);
+
+            // Hash the dest file list
+            MoveButton.Content = "Hashing destination files...";
+            var destFileList = await mainController.GetFileList(DestPathTextbox.Text);
+
+            MoveButton.Content = "Copying...";
+            await mainController.GetFileListModel(
+                srcFileList, destFileList, DestPathTextbox.Text,
+                new Progress<double>(value => SingleFileProgress.Value = value));
+
+            MoveButton.Content = "Copy";
+            MoveButton.IsEnabled = true;
+            CopyButton.IsEnabled = true;
         }
 
         private void SrcPathButton_OnClick(object sender, RoutedEventArgs e)
@@ -72,5 +112,7 @@ namespace HashCopier
                 MessageBox.Show("User cancelled.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+
     }
 }

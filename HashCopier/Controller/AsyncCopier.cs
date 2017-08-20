@@ -11,20 +11,12 @@ namespace HashCopier.Controller
     {
         public static async Task Copy(string srcPath, string destPath, int bufferSize = 16777216)
         {
-            var srcDir = new DirectoryInfo(srcPath);
-            var destDir = new DirectoryInfo(destPath);
-
-            foreach (var file in srcDir.EnumerateDirectories())
+            using (var inStream = File.Open(srcPath, FileMode.Open))
             {
-                using (var inStream = File.Open(srcPath, FileMode.Open))
+                using (var outStream = File.Create(destPath))
                 {
-                    var relativePath = srcDir.FullName.Replace(srcDir.FullName, destDir.FullName);
-
-                    using (var outStream = File.Create(relativePath))
-                    {
-                        // Run async copy
-                        await inStream.CopyToAsync(outStream);
-                    }
+                    // Run async copy
+                    await inStream.CopyToAsync(outStream);
                 }
             }
         }

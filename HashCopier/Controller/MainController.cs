@@ -23,8 +23,8 @@ namespace HashCopier.Controller
                 {
                     var bufferedStream = new BufferedStream(new FileStream(filePath, FileMode.Open), bufferedSize);
 
-                    // Add to file list
-                    fileList.Add(BitConverter.ToString(shaHasher.ComputeHash(bufferedStream)), filePath);
+                    // Add to file list, remove "-" so that it helps me easier to debug.
+                    fileList.Add(BitConverter.ToString(shaHasher.ComputeHash(bufferedStream)).Replace("-", ""), filePath);
                     bufferedStream.Dispose();
                 }
             });
@@ -33,11 +33,10 @@ namespace HashCopier.Controller
         }
 
         public async Task GetFileListModel(Dictionary<string, string> srcHashList, Dictionary<string, string> destHashList,
-            string destDir, IProgress<double> progress)
+            string destDir, IProgress<double> progress, bool moveFile = false)
         {
             var modelList = new List<FileListModel>();
             var fileListIndex = 0d;
-            var asyncCopier = new AsyncCopier();
 
             /*
                 Get a relative root directory
@@ -66,7 +65,7 @@ namespace HashCopier.Controller
                 select possibleMatch;
             var rootDir = Path.GetDirectoryName(matchingChars.First());
 
-            // Invoke the GUI
+            // Invoke the GUI, bind the list to GUI control
             MainWindow.MainWindowToInvoke.FileListLoader = modelList;
  
             // Iterate the file from the list
@@ -81,17 +80,22 @@ namespace HashCopier.Controller
                         StatusColor = new SolidColorBrush(Colors.Green)
                     });
 
+                    // Force refresh UI from the binding (otherwise InvalidOperationException will throw)
+                    // Ref: https://stackoverflow.com/questions/32254676/invalidoperationexception-an-itemscontrol-is-inconsistent-with-its-items-source
+                    MainWindow.MainWindowToInvoke.ForceRefresh();
+
                     // Recursively create a directory first, before do any copying tasks.
-                    var relativeDir = Path.GetDirectoryName(dictionaryItem.Key).Replace(rootDir, "");
+                    var relativeDir = Path.GetDirectoryName(dictionaryItem.Value).Replace(rootDir, "");
                     if (!relativeDir.StartsWith(@"\")) { relativeDir = @"\" + relativeDir; }
                     var destPath = destDir + relativeDir;
                     Directory.CreateDirectory(destPath);
 
                     // Do copying task
-                    await AsyncCopier.Copy(dictionaryItem.Key, 
-                        destPath + @"\" +  Path.GetFileName(dictionaryItem.Key));
+                    await AsyncCopier.Copy(dictionaryItem.Value, 
+                        destPath +  Path.GetFileName(dictionaryItem.Value));
 
-                    // Report index
+                    // If this method runs in move file mode, then delete the file after copying it.
+                    if(moveFile) { File.Delete(dictionaryItem.Value); }
                 }
                 else
                 {
@@ -101,9 +105,13 @@ namespace HashCopier.Controller
                         Status = "Duplicated",
                         StatusColor = new SolidColorBrush(Colors.DarkOrange)
                     });
+
+                    // Force refresh UI from the binding (otherwise InvalidOperationException will throw)
+                    // Ref: https://stackoverflow.com/questions/32254676/invalidoperationexception-an-itemscontrol-is-inconsistent-with-its-items-source
+                    MainWindow.MainWindowToInvoke.ForceRefresh();
                 }
 
-                fileListIndex++;
+                progress.Report(((++fileListIndex)/srcHashList.Count)*100);
             }
         }
     }

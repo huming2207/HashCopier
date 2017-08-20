@@ -13,21 +13,21 @@
                      VerticalAlignment="Top" Width="372" />
             <TextBox x:Name="DestPathTextbox" HorizontalAlignment="Left" Height="24" Margin="118,56,0,0" TextWrapping="Wrap" Text="Not selected"
                      VerticalAlignment="Top" Width="372" />
-            <Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="228"
+            <Button x:Name="CopyButton" Content="Copy" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="233"
                     Height="42" Click="CopyButton_OnClick"/>
-            <Button x:Name="MoveButton" Content="Move" HorizontalAlignment="Left" Margin="243,90,0,0" VerticalAlignment="Top" Width="247"
-                    Height="42" Click="MoveButton_OnClick" />
+            <Button x:Name="MoveButton" Content="Move" HorizontalAlignment="Left" Margin="257,90,0,0" VerticalAlignment="Top" Width="233"
+                    Height="42" Click="MoveButton_OnClick"/>
             <Button x:Name="SrcPathButton"  Content="Source Path" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top"
                     Width="103" Height="25" Click="SrcPathButton_OnClick" />
             <Button x:Name="DestPathButton" Content="Dest Path" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top"
                     Width="103" Height="25" Click="DestPathButton_OnClick" />
 
         </Grid>
-        <ListView Margin="10,155,10,55.5" Name="FileList">
+        <ListView Margin="10,155,10.2,49.4" Name="FileList">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Source file" Width="350" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Status" Width="150">
+                    <GridViewColumn Header="Status" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Status}" Foreground="{Binding StatusColor}" />
@@ -38,8 +38,7 @@
             </ListView.View>
         </ListView>
 
-        <ProgressBar Margin="10,326,10,29.5" x:Name="SingleFileProgress" Maximum="100" Minimum="0"/>
-        <ProgressBar Margin="10,347,10,8.5" x:Name="WholeProgress"  Maximum="100" Minimum="0"/>
+        <ProgressBar Margin="10,326,10.2,10.4" x:Name="SingleFileProgress" Maximum="100" Minimum="0"/>
 
     </Grid>
 </Window>
