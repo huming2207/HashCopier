@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="HashCopier by Jackson Hu" Height="400" Width="530">
     <Grid>
-        <Grid Margin="10,10,10,172.5">
+        <Grid Margin="10,10,10.2,220.4" x:Name="SelectionGrid">
 
             <TextBox x:Name="SrcPathTextbox" HorizontalAlignment="Left" Height="24" Margin="118,18,0,0" TextWrapping="Wrap" Text="Not selected"
                      VerticalAlignment="Top" Width="372" />

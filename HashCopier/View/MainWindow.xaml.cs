@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Windows;
 using System.Windows.Threading;
 using HashCopier.Controller;
 using HashCopier.Model;
-using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace HashCopier
@@ -35,8 +33,7 @@ namespace HashCopier
 
         private async void CopyButton_OnClick(object sender, RoutedEventArgs e)
         {
-            CopyButton.IsEnabled = false;
-            MoveButton.IsEnabled = false;
+            SelectionGrid.IsEnabled = false;
 
             var mainController = new MainController();
 
@@ -49,20 +46,17 @@ namespace HashCopier
             var destFileList = await mainController.GetFileList(DestPathTextbox.Text);
 
             CopyButton.Content = "Copying...";
-            await mainController.GetFileListModel(
+            await MainController.GetFileListModel(
                 srcFileList, destFileList, DestPathTextbox.Text,
                 new Progress<double>(value => SingleFileProgress.Value = value));
 
             CopyButton.Content = "Copy";
-            CopyButton.IsEnabled = true;
-            MoveButton.IsEnabled = true;
+            SelectionGrid.IsEnabled = true;
         }
 
         private async void MoveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            MoveButton.IsEnabled = false;
-            CopyButton.IsEnabled = false;
-
+            SelectionGrid.IsEnabled = false;
             var mainController = new MainController();
 
             // Hash the source file list
@@ -74,13 +68,12 @@ namespace HashCopier
             var destFileList = await mainController.GetFileList(DestPathTextbox.Text);
 
             MoveButton.Content = "Copying...";
-            await mainController.GetFileListModel(
+            await MainController.GetFileListModel(
                 srcFileList, destFileList, DestPathTextbox.Text,
                 new Progress<double>(value => SingleFileProgress.Value = value));
 
             MoveButton.Content = "Copy";
-            MoveButton.IsEnabled = true;
-            CopyButton.IsEnabled = true;
+            SelectionGrid.IsEnabled = true;
         }
 
         private void SrcPathButton_OnClick(object sender, RoutedEventArgs e)
